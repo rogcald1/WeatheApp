@@ -1,0 +1,46 @@
+html {
+    background-color: #2950B3;
+    color: #FFCC54;
+    margin-left: 1em;
+    margin-top: 1em;
+}
+.weathers {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border: solid 2px #6E9BFF;
+  width: 35em;
+}
+.weathers:hover {
+    border: solid 3.5px #5489FF; 
+}
+.info {
+  padding-left: 0.5em;
+}
+input {
+  margin-bottom: 1em;
+  margin-left: 2px;
+  padding-left: 2px;
+  background-color: lightgrey;
+  border: none;
+  color: black;
+}
+input:hover {
+    border: solid 1px #FFCC54;
+}
+input:focus-visible {
+    border: solid 1px #FFCC54;
+}
+.regName {
+  margin-top: 1em;
+}
+button {
+    background-color: #B38517;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition-duration: 0.3s;
+}
+button:hover {
+    background-color: #5489FF;
+}
