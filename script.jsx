@@ -4,12 +4,15 @@ class WeatherApp extends React.Component {
       this.loadForecast = this.loadForecast.bind(this);
       this.statusOne = this.statusOne.bind(this);
       this.statusTwo = this.statusTwo.bind(this);
+      this.reloadPage = this.reloadPage.bind(this);
+      this.changeLoad = this.changeLoad.bind(this);
       this.state = {
         forecast: [],
         region: [],
         isLoading: false,
         error: 'none',
         errorMessage: '',
+        firstLoad: true
       };
     }
 
@@ -25,6 +28,14 @@ class WeatherApp extends React.Component {
                 error: 'forecast',
                 errorMessage: res.title + ' ' + res.statusText
             })
+    }
+
+    reloadPage() {
+        location.reload();
+    }
+
+    changeLoad = () => {
+        this.setState({firstLoad: false})
     }
   
     loadForecast() {
@@ -89,10 +100,10 @@ class WeatherApp extends React.Component {
         
     
     render() {  
-        let content = <Loader error={this.state.error} errorMessage={this.state.errorMessage} />;
+        let content = <Loader error={this.state.error} errorMessage={this.state.errorMessage} reloadPage={this.reloadPage} />;
         if (!this.state.isLoading) {
             content = (
-                <WeatherCard loadForecast={this.loadForecast} forecast={this.state.forecast} city={this.state.city} usState={this.state.usState} > </WeatherCard>
+                <WeatherCard loadForecast={this.loadForecast} forecast={this.state.forecast} city={this.state.city} usState={this.state.usState} changeLoad={this.changeLoad} firstLoad={this.state.firstLoad}> </WeatherCard>
             ) 
         } 
       return ( 
@@ -105,19 +116,31 @@ class WeatherApp extends React.Component {
   class WeatherCard extends React.Component {
       constructor(props) {
         super(props);
+        this.onClickEvent = this.onClickEvent.bind(this);
     }
     
+    onClickEvent() {
+
+        this.props.loadForecast();
+        this.props.changeLoad();
+
+    }
+
     render() {
-        let content = (
+        let content; 
+
+        if (this.props.firstLoad) {
+
+        content = (
                 <div>
           <h2>Weather Forecast</h2>
           <label>Latitude: </label>
-          <input type='text' id="lat" key="lat" defaultValue='40.65'></input>
+          <input type='text' id="lat" key="lat" placeholder='example: 40.65'></input>
           <br />
           <label>Longitude: </label>
-          <input type='text' id= "long" key="long" defaultValue='-73.95'></input>
+          <input type='text' id= "long" key="long" placeholder='example: -73.95'></input>
           <br />
-          <button onClick={this.props.loadForecast}> Click to Load Weather </button>
+          <button onClick={this.onClickEvent}> Click to Load Weather </button>
           
           <p className='regName'>Region: {this.props.city} {this.props.usState}</p>
            
@@ -130,6 +153,30 @@ class WeatherApp extends React.Component {
           </div>
             )
 
+        } else if (!this.props.firstLoad) {
+            content = (
+                <div>
+          <h2>Weather Forecast</h2>
+          <label>Latitude: </label>
+          <input type='text' id="lat" key="lat" ></input>
+          <br />
+          <label>Longitude: </label>
+          <input type='text' id= "long" key="long" ></input>
+          <br />
+          <button onClick={this.onClickEvent}> Click to Load Weather </button>
+          
+          <p className='regName'>Region: {this.props.city} {this.props.usState}</p>
+           
+          {this.props.forecast.map((item, index) => (
+                  <div className="weathers" key={index}> 
+            <p className="info">{item.name}: {item.temperature}F || Wind Speed: {item.windSpeed} || {item.shortForecast}</p>
+          </div>
+        ))}
+  
+          </div>
+            )   
+        }
+          
         return (
             <div>
          {content} 
@@ -171,7 +218,7 @@ class Loader extends React.Component {
                 <label>Longitude: </label>
                 <input type='text' id= "long" key="long" defaultValue='-73.95'></input>
                 <br />
-                <button> Loading! </button>
+                <button onClick={this.props.reloadPage}> Reload </button>
     
                  <p className='regName'>Region: {this.props.city} {this.props.usState}</p>
                 
@@ -190,7 +237,7 @@ class Loader extends React.Component {
                 <label>Longitude: </label>
                 <input type='text' id= "long" key="long" defaultValue='-73.95'></input>
                 <br />
-                <button> Loading! </button>
+                <button onClick={this.props.reloadPage}> Reload </button>
     
                  <p className='regName'>Region: {this.props.city} {this.props.usState}</p>
     
